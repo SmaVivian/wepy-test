@@ -1,0 +1,21 @@
+<style lang="less">
+@import "./../styles/mixin";
+.title {
+  color: @primary;
+}
+</style>
+
+
+<template>
+  <div class="container">
+    <div class="title">预约</div>
+  </div>
+</template>
+
+<script>
+import wepy from '@wepy/core'
+
+wepy.page({
+  // 选项
+})
+</script>
