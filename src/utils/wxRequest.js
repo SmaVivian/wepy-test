@@ -5,6 +5,7 @@ import tip from './tip'
 import promisify  from '@wepy/use-promisify'
 wepy.use(promisify)
 
+const baseUrl = 'http://wx.tj720.com/admin'
 const API_SECRET_KEY = 'www.mall.cycle.com'
 const TIMESTAMP = util.getCurrentTime()
 // const SIGN = md5.hex_md5((TIMESTAMP + API_SECRET_KEY).toLowerCase())
@@ -15,7 +16,7 @@ const wxRequest = async(url, params = {}) => {
     // data.sign = SIGN;
     data.time = TIMESTAMP;
     let res = await wepy.wx.request({
-      url: url,
+      url: baseUrl + url,
       method: params.method || 'GET',
       data: data,
       header: { 'Content-Type': 'application/json' },

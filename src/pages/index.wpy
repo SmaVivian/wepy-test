@@ -20,13 +20,39 @@ import { wxRequest } from '@/utils/wxRequest'
 
 wepy.page({
   data: {
-    val: 1
+    val: 1,
+    currentPage: 1,
+    size: 10,
   },
   methods: {
     async getDataList() {
       // console.log(wxRequest('http://sdk.tj720.com/sdk-system/api/culturalSpot/getDetail/49',{a: 1}))
-      let res = await wxRequest('http://sdk.tj720.com/sdk-system/api/culturalSpot/getDetail/49')
+      // let res = await wxRequest('http://sdk.tj720.com/sdk-system/api/culturalSpot/getDetail/49')
+      let res = await wxRequest('/AppointOrder/museumList.do', {
+        query: {
+          // a: 1
+          size: this.size,
+          currentPage: this.currentPage
+        }
+      })
       console.log(res)
+
+
+      // this.$http
+      //   .get('/AppointOrder/museumList.do', {
+      //     type: this.activeTab, //排序类型(1-默认排序 2-距离最近 3-预约量)
+      //     area: this.currentCity.id, //区列表
+      //     longitude: this.longitude, //经度
+      //     latitude: this.latitude, //纬度
+      //     size: this.size,
+      //     currentPage: this.currentPage
+      //   })
+      //   .then(res => {
+      //     let data = res.data
+      //     this.loading = false
+      //     this.finished = this.currentPage >= res.page.totalPage ? true : false
+      //     this.dataList = this.dataList.concat(data)
+      //   })
     }
   },
   created() {
