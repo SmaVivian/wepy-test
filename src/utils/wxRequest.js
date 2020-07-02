@@ -21,7 +21,7 @@ const wxRequest = async(url, params = {}) => {
       data: data,
       header: { 'Content-Type': 'application/json' },
     });
-    console.log(222, res)
+    // console.log(222, res)
     tip.loaded();
     return res.data;
 };

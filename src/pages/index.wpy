@@ -11,6 +11,12 @@
     <div class="title">第一个Demo{{val}}
       <img src="../images/no_image.png" alt="" style="width:50rpx;height:50rpx;">
     </div>
+
+    <div>
+      <div v-for="item in dataList" style="height:300rpx;">{{index+1}}: {{item.name}}</div>
+
+      <div v-if="isTotal">没有更多数据啦</div>
+    </div>
   </div>
 </template>
 
@@ -21,21 +27,40 @@ import { wxRequest } from '@/utils/wxRequest'
 wepy.page({
   data: {
     val: 1,
+    dataList: [],
+    isTotal: false,
     currentPage: 1,
     size: 10,
   },
   methods: {
-    async getDataList() {
+    async getDataList(isFirst) {
+      if(isFirst) {
+        this.clearCache()
+      } else {
+        if(this.isTotal) return
+      }
       // console.log(wxRequest('http://sdk.tj720.com/sdk-system/api/culturalSpot/getDetail/49',{a: 1}))
       // let res = await wxRequest('http://sdk.tj720.com/sdk-system/api/culturalSpot/getDetail/49')
       let res = await wxRequest('/AppointOrder/museumList.do', {
         query: {
           // a: 1
           size: this.size,
-          currentPage: this.currentPage
+          currentPage: isFirst ? 1 : this.currentPage
         }
       })
-      console.log(res)
+      console.log('data', res)
+      // this.dataList = res.data
+      // let data = res.data
+
+      // 这一步实现了上拉加载更多
+      this.dataList = this.dataList.concat(res.data)
+      console.log(123,this.dataList)
+      if(this.currentPage < res.page.totalPage) {
+        this.currentPage++
+        this.isTotal = false
+      } else {
+        this.isTotal = true
+      }
 
 
       // this.$http
@@ -53,10 +78,50 @@ wepy.page({
       //     this.finished = this.currentPage >= res.page.totalPage ? true : false
       //     this.dataList = this.dataList.concat(data)
       //   })
-    }
+    },
+    clearCache() {
+      this.dataList = []
+      this.isTotal = false
+      this.currentPage = 1
+    },
+  },
+  onPullDownRefresh: function () {
+    // this.clearCache()
+    this.getDataList(true) //第一次加载数据
+    wx.stopPullDownRefresh()  // 停止当前页面的下拉刷新
+  },
+  onReachBottom() {
+    this.getDataList()
+    // console.log(123)
+
+    // let that = this;
+    // that.showLoading = true;
+    // console.log(that.page_total + "===" + that.currentPage);
+    // //判断总页数是否大于翻页数
+    // if ((that.page_total) > that.currentPage) {
+    //   //防止重复加载
+    //   if (that.preventRepeatReuqest) {
+    //     return true;
+    //   }
+    //   that.preventRepeatReuqest = true;
+    //   that.currentPage++;
+    //   that.getDataList(that.currentPage);
+    //   that.preventRepeatReuqest = false;
+    // } else {
+    //   that.showLoading = false;
+    // }
   },
   created() {
     this.getDataList()
   },
 })
 </script>
+
+<config>
+{
+  "enablePullDownRefresh": true,
+  "usingComponents": {
+    
+  }
+}
+</config>
